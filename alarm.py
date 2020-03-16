@@ -1,3 +1,7 @@
+# Andrew Crofts
+# Incident scanner alarm
+# This program takes in internet traffic and outputs a warning if certain incidents occur
+
 #!/usr/bin/python3
 
 from scapy.all import *
@@ -18,21 +22,25 @@ def packetcallback(packet):
         try:
             if packet[TCP]:
                 payload = packet[TCP].load.decode('utf-8')
+                # check for XMAS scan
                 if packet[TCP].flags.FPU:
                     incidenttype = "XMAS scan"
                     incident = True
                     num_incidents = num_incidents + 1
                     pro_port = "TCP"
+                # check for FIN scan
                 elif packet[TCP].flags.F:
                     incidenttype = "FIN scan"
                     incident = True
                     num_incidents = num_incidents + 1
                     pro_port = "TCP"
+                # check for RDP scan
                 elif packet [TCP].dport == 3389:
                     incidenttype = "RDP scan"
                     incident = True
                     num_incidents = num_incidents + 1
                     pro_port = "3389"
+                # check for null scan
                 elif not packet[TCP].flags:
                     incidenttype = "NULL scan"
                     incident = True
